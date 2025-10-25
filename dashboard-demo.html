@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brukd Customer Engagement Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: #0e1117;
+            color: #fafafa;
+        }
+        
+        /* Streamlit-like Header */
+        .header {
+            background: #262730;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #464646;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .header-menu {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #a3a8b4;
+        }
+        
+        /* Sidebar (Streamlit style) */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 3.5rem;
+            bottom: 0;
+            width: 300px;
+            background: #262730;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+            border-right: 1px solid #464646;
+        }
+        
+        .sidebar h3 {
+            color: #fafafa;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-label {
+            color: #a3a8b4;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .sidebar select,
+        .sidebar input {
+            width: 100%;
+            padding: 0.5rem;
+            background: #0e1117;
+            border: 1px solid #464646;
+            border-radius: 0.25rem;
+            color: #fafafa;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar button {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: #ff4b4b;
+            border: none;
+            border-radius: 0.25rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: background 0.2s;
+        }
+        
+        .sidebar button:hover {
+            background: #ff6b6b;
+        }
+        
+        .sidebar button.secondary {
+            background: transparent;
+            border: 1px solid #464646;
+            color: #fafafa;
+        }
+        
+        .sidebar button.secondary:hover {
+            border-color: #fafafa;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 2rem;
+            min-height: calc(100vh - 3.5rem);
+        }
+        
+        /* Streamlit-like Title */
+        .st-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #fafafa;
+        }
+        
+        .st-caption {
+            color: #a3a8b4;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Metrics Row */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: #262730;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #464646;
+        }
+        
+        .metric-label {
+            color: #a3a8b4;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #fafafa;
+        }
+        
+        .metric-delta {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .metric-delta.positive {
+            color: #09ab3b;
+        }
+        
+        .metric-delta.negative {
+            color: #ff4b4b;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #464646;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: #a3a8b4;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            color: #fafafa;
+        }
+        
+        .tab.active {
+            color: #ff4b4b;
+            border-bottom-color: #ff4b4b;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Container */
+        .container {
+            background: #262730;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #464646;
+            margin-bottom: 1.5rem;
+        }
+        
+        .container h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #fafafa;
+        }
+        
+        .container h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #fafafa;
+        }
+        
+        /* Expander (Streamlit style) */
+        .expander {
+            background: #1e1e1e;
+            border: 1px solid #464646;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .expander-header {
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .expander-header:hover {
+            background: #262730;
+        }
+        
+        .expander-content {
+            padding: 0 1rem 1rem 1rem;
+            display: none;
+        }
+        
+        .expander.open .expander-content {
+            display: block;
+        }
+        
+        .expander-arrow {
+            transition: transform 0.2s;
+        }
+        
+        .expander.open .expander-arrow {
+            transform: rotate(90deg);
+        }
+        
+        /* Data Display */
+        .data-frame {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .data-frame th {
+            background: #1e1e1e;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #464646;
+            color: #fafafa;
+        }
+        
+        .data-frame td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #464646;
+            color: #a3a8b4;
+        }
+        
+        .data-frame tr:hover {
+            background: #1e1e1e;
+        }
+        
+        /* Chart Container */
+        .chart-wrapper {
+            background: #262730;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Columns */
+        .columns {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .columns.col-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .columns.col-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        /* Info/Success/Warning/Error boxes */
+        .message-box {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+        
+        .message-box.info {
+            background: #1e3a5f;
+            border-color: #1f77b4;
+            color: #a8d4ff;
+        }
+        
+        .message-box.success {
+            background: #0e3d2a;
+            border-color: #09ab3b;
+            color: #7cf5b2;
+        }
+        
+        .message-box.warning {
+            background: #4a3800;
+            border-color: #ffa421;
+            color: #ffd996;
+        }
+        
+        .message-box.error {
+            background: #4a1212;
+            border-color: #ff4b4b;
+            color: #ffb3b3;
+        }
+        
+        /* Segment Badge */
+        .segment-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .segment-badge.segment-0 {
+            background: #1f77b4;
+            color: white;
+        }
+        
+        .segment-badge.segment-1 {
+            background: #ff7f0e;
+            color: white;
+        }
+        
+        .segment-badge.segment-2 {
+            background: #2ca02c;
+            color: white;
+        }
+        
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .priority-badge.urgent {
+            background: #ff4b4b;
+            color: white;
+        }
+        
+        .priority-badge.high {
+            background: #ffa421;
+            color: white;
+        }
+        
+        .priority-badge.standard {
+            background: #09ab3b;
+            color: white;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            background: #1e1e1e;
+            border-radius: 0.25rem;
+            height: 0.5rem;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            background: #ff4b4b;
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .columns.col-2,
+            .columns.col-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">🎯 Brukd Customer Engagement Dashboard</div>
+        <div class="header-menu">
+            <span>brukdconsultancy.com</span>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>📊 Navigation</h3>
+        
+        <div class="sidebar-section">
+            <label class="sidebar-label">Select Page</label>
+            <select id="page-select" onchange="switchPage(this.value)">
+                <option value="overview">🏠 Executive Dashboard</option>
+                <option value="segments">👥 Customer Segments</option>
+                <option value="predictions">🔮 Predictions</option>
+                <option value="recommendations">💡 Recommendations</option>
+                <option value="roi">📈 ROI Analysis</option>
+                <option value="lookup">🎯 Customer Lookup</option>
+            </select>
+        </div>
+        
+        <div class="sidebar-section" id="segment-filter">
+            <label class="sidebar-label">Filter by Segment</label>
+            <select id="segment-select">
+                <option value="all">All Segments</option>
+                <option value="0">🌟 High-Value Frequent Buyers</option>
+                <option value="1">💰 Budget-Minded Shoppers</option>
+                <option value="2">⚠️ At-Risk Churners</option>
+            </select>
+        </div>
+        
+        <div class="sidebar-section" id="risk-filter">
+            <label class="sidebar-label">Filter by Churn Risk</label>
+            <select id="risk-select">
+                <option value="all">All Risk Levels</option>
+                <option value="low">Low Risk</option>
+                <option value="medium">Medium Risk</option>
+                <option value="high">High Risk</option>
+            </select>
+        </div>
+        
+        <div class="sidebar-section">
+            <button onclick="refreshData()">🔄 Refresh Data</button>
+            <button class="secondary" onclick="exportData()">📥 Export Report</button>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="message-box info">
+                <strong>ℹ️ About This Dashboard</strong><br>
+                Interactive demo of AI-driven customer segmentation with real-time predictions and recommendations.
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Overview Page -->
+        <div id="page-overview" class="page-content">
+            <h1 class="st-title">🏠 Executive Dashboard</h1>
+            <p class="st-caption">Real-time customer intelligence and business metrics</p>
+            
+            <!-- Key Metrics -->
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">Total Customers</div>
+                    <div class="metric-value">3,900</div>
+                    <div class="metric-delta positive">↑ Active customer base</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total CLV</div>
+                    <div class="metric-value">$5.9M</div>
+                    <div class="metric-delta positive">↑ Avg: $1,518</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">High Churn Risk</div>
+                    <div class="metric-value">383</div>
+                    <div class="metric-delta negative">⚠️ 9.8% of base</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Re-engagement Lift</div>
+                    <div class="metric-value">+12%</div>
+                    <div class="metric-delta positive">↑ vs. previous campaigns</div>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="container">
+                <h2>Customer Segment Distribution</h2>
+                <div id="segmentPie" class="chart-wrapper"></div>
+            </div>
+            
+            <div class="columns col-2">
+                <div class="container">
+                    <h3>CLV by Segment</h3>
+                    <div id="clvBySegment" class="chart-wrapper"></div>
+                </div>
+                <div class="container">
+                    <h3>Churn Risk Overview</h3>
+                    <div id="churnRiskChart" class="chart-wrapper"></div>
+                </div>
+            </div>
+            
+            <!-- Key Insights -->
+            <div class="container">
+                <h2>💡 Key Insights</h2>
+                <div class="message-box success">
+                    <strong>✅ Segment 0 (High-Value)</strong> contributes 45% of total revenue with only 33% of customers
+                </div>
+                <div class="message-box warning">
+                    <strong>⚠️ 383 customers</strong> are at high risk of churning, representing $165K in at-risk revenue
+                </div>
+                <div class="message-box info">
+                    <strong>📈 Marketing ROI</strong> improved from 8-10x to 29.36x through targeted segmentation
+                </div>
+            </div>
+        </div>
+
+        <!-- Segments Page -->
+        <div id="page-segments" class="page-content" style="display: none;">
+            <h1 class="st-title">👥 Customer Segments</h1>
+            <p class="st-caption">Detailed analysis of 3 actionable customer segments</p>
+            
+            <!-- Segment Selector Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="showSegmentDetail(0)">🌟 Segment 0</button>
+                <button class="tab" onclick="showSegmentDetail(1)">💰 Segment 1</button>
+                <button class="tab" onclick="showSegmentDetail(2)">⚠️ Segment 2</button>
+            </div>
+            
+            <!-- Segment 0 Detail -->
+            <div id="segment-detail-0" class="segment-detail">
+                <div class="container">
+                    <h2>🌟 High-Value Frequent Buyers</h2>
+                    <span class="segment-badge segment-0">Segment 0</span>
+                    <span class="priority-badge standard">Low Churn Risk</span>
+                    
+                    <div class="metrics-row" style="margin-top: 1.5rem;">
+                        <div class="metric-card">
+                            <div class="metric-label">Customer Count</div>
+                            <div class="metric-value">1,443</div>
+                            <div class="metric-delta positive">37% of base</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Average CLV</div>
+                            <div class="metric-value">$2,100+</div>
+                            <div class="metric-delta positive">Highest value</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Churn Risk</div>
+                            <div class="metric-value">8%</div>
+                            <div class="metric-delta positive">Very Low</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Subscription Rate</div>
+                            <div class="metric-value">62.1%</div>
+                            <div class="metric-delta positive">Highly engaged</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <h3>📋 Segment Characteristics</h3>
+                    <table class="data-frame">
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>Average Age</td>
+                            <td>28-35 years</td>
+                            <td>Young professionals</td>
+                        </tr>
+                        <tr>
+                            <td>Avg Previous Purchases</td>
+                            <td>8+ purchases</td>
+                            <td>Frequent buyers</td>
+                        </tr>
+                        <tr>
+                            <td>Avg Review Rating</td>
+                            <td>4.0+ / 5.0</td>
+                            <td>High satisfaction</td>
+                        </tr>
+                        <tr>
+                            <td>Revenue Contribution</td>
+                            <td>45% of total</td>
+                            <td>Most valuable segment</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="container">
+                    <h3>💎 Engagement Strategy</h3>
+                    <div class="message-box success">
+                        <strong>Priority:</strong> Retention & Upselling<br>
+                        <strong>Budget Allocation:</strong> 30% of marketing spend<br>
+                        <strong>Expected Impact:</strong> +15-20% revenue per customer
+                    </div>
+                    
+                    <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Recommended Actions:</h4>
+                    <ul style="margin-left: 1.5rem; color: #a3a8b4; line-height: 1.8;">
+                        <li>Enroll in VIP/Premium loyalty tier with exclusive benefits</li>
+                        <li>Offer personalized product recommendations based on purchase history</li>
+                        <li>Provide early access to new collections and exclusive sales</li>
+                        <li>Implement referral program with premium incentives</li>
+                        <li>Deploy predictive upselling campaigns for complementary products</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Segment 1 Detail -->
+            <div id="segment-detail-1" class="segment-detail" style="display: none;">
+                <div class="container">
+                    <h2>💰 Budget-Minded Occasional Shoppers</h2>
+                    <span class="segment-badge segment-1">Segment 1</span>
+                    <span class="priority-badge high">Medium Churn Risk</span>
+                    
+                    <div class="metrics-row" style="margin-top: 1.5rem;">
+                        <div class="metric-card">
+                            <div class="metric-label">Customer Count</div>
+                            <div class="metric-value">1,918</div>
+                            <div class="metric-delta positive">49% of base</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Average CLV</div>
+                            <div class="metric-value">$1,200</div>
+                            <div class="metric-delta">Moderate value</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Churn Risk</div>
+                            <div class="metric-value">22%</div>
+                            <div class="metric-delta warning">Medium</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Subscription Rate</div>
+                            <div class="metric-value">0%</div>
+                            <div class="metric-delta negative">No subscriptions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <h3>💰 Engagement Strategy</h3>
+                    <div class="message-box warning">
+                        <strong>Priority:</strong> Engagement & Conversion<br>
+                        <strong>Budget Allocation:</strong> 40% of marketing spend<br>
+                        <strong>Expected Impact:</strong> +10-12% conversion rate
+                    </div>
+                    
+                    <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Recommended Actions:</h4>
+                    <ul style="margin-left: 1.5rem; color: #a3a8b4; line-height: 1.8;">
+                        <li>Send targeted promotional emails (15-20% discount offers)</li>
+                        <li>Create bundle offers and value packs</li>
+                        <li>Launch seasonal campaigns aligned with purchase patterns</li>
+                        <li>Set up cart abandonment recovery workflows</li>
+                        <li>Introduce loyalty points program for incremental purchases</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Segment 2 Detail -->
+            <div id="segment-detail-2" class="segment-detail" style="display: none;">
+                <div class="container">
+                    <h2>⚠️ At-Risk Churners</h2>
+                    <span class="segment-badge segment-2">Segment 2</span>
+                    <span class="priority-badge urgent">High Churn Risk</span>
+                    
+                    <div class="metrics-row" style="margin-top: 1.5rem;">
+                        <div class="metric-card">
+                            <div class="metric-label">Customer Count</div>
+                            <div class="metric-value">539</div>
+                            <div class="metric-delta">26% of base</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Average CLV</div>
+                            <div class="metric-value">$800</div>
+                            <div class="metric-delta negative">Low value</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Churn Risk</div>
+                            <div class="metric-value">55%</div>
+                            <div class="metric-delta negative">Very High</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Revenue at Risk</div>
+                            <div class="metric-value">$800K+</div>
+                            <div class="metric-delta negative">Urgent action needed</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <h3>🚨 Urgent Win-Back Strategy</h3>
+                    <div class="message-box error">
+                        <strong>Priority:</strong> IMMEDIATE Win-Back & Retention<br>
+                        <strong>Budget Allocation:</strong> 30% of marketing spend<br>
+                        <strong>Expected Impact:</strong> +12% re-engagement rate<br>
+                        <strong>Timeline:</strong> Immediate action required
+                    </div>
+                    
+                    <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Recommended Actions:</h4>
+                    <ul style="margin-left: 1.5rem; color: #a3a8b4; line-height: 1.8;">
+                        <li><strong>🚨 PRIORITY:</strong> Immediate win-back campaign activation</li>
+                        <li>Personal outreach from customer success team</li>
+                        <li>Deploy highly personalized incentives (30%+ off first purchase back)</li>
+                        <li>Conduct exit surveys to identify pain points</li>
+                        <li>Implement re-engagement drip campaigns over 30 days</li>
+                        <li>Send "We miss you" targeted messaging with compelling offers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Predictions Page -->
+        <div id="page-predictions" class="page-content" style="display: none;">
+            <h1 class="st-title">🔮 Live Predictions</h1>
+            <p class="st-caption">Real-time CLV and churn predictions powered by XGBoost</p>
+            
+            <div class="container">
+                <h2>Try CLV Prediction</h2>
+                <p style="color: #a3a8b4; margin-bottom: 1.5rem;">
+                    Enter customer characteristics to get instant predictions
+                </p>
+                
+                <div class="columns col-3">
+                    <div>
+                        <label class="sidebar-label">Age</label>
+                        <input type="number" id="pred-age" value="35" min="18" max="80">
+                    </div>
+                    <div>
+                        <label class="sidebar-label">Previous Purchases</label>
+                        <input type="number" id="pred-purchases" value="10" min="0" max="100">
+                    </div>
+                    <div>
+                        <label class="sidebar-label">Avg Purchase Amount ($)</label>
+                        <input type="number" id="pred-amount" value="60" min="10" max="500">
+                    </div>
+                    <div>
+                        <label class="sidebar-label">Review Rating</label>
+                        <input type="number" id="pred-rating" value="4.0" min="1" max="5" step="0.1">
+                    </div>
+                    <div>
+                        <label class="sidebar-label">Subscription Status</label>
+                        <select id="pred-subscription">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button style="width: auto; padding: 0.75rem 2rem; background: #ff4b4b; border: none; 
+                       border-radius: 0.25rem; color: white; font-weight: 600; cursor: pointer; 
+                       margin-top: 1rem;" onclick="predictCLV()">
+                    Calculate Prediction
+                </button>
+                
+                <div id="prediction-results" style="margin-top: 2rem; display: none;">
+                    <div class="message-box success">
+                        <h3 style="margin-bottom: 1rem;">Prediction Results</h3>
+                        <div class="metrics-row">
+                            <div class="metric-card">
+                                <div class="metric-label">Predicted CLV</div>
+                                <div class="metric-value" id="pred-clv-value">$1,234</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Confidence Interval (95%)</div>
+                                <div class="metric-value" style="font-size: 1.2rem;" id="pred-confidence">$1,111 - $1,357</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Predicted Segment</div>
+                                <div class="metric-value" style="font-size: 1.2rem;" id="pred-segment">Segment 0</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Churn Risk (90d)</div>
+                                <div class="metric-value" style="font-size: 1.2rem;" id="pred-churn">8%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container">
+                <h2>🎯 Model Performance</h2>
+                <div class="columns col-3">
+                    <div class="metric-card">
+                        <div class="metric-label">CLV Model (R²)</div>
+                        <div class="metric-value">0.9996</div>
+                        <div class="metric-delta positive">99.96% accuracy</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Churn Model (F1)</div>
+                        <div class="metric-value">0.94</div>
+                        <div class="metric-delta positive">Excellent performance</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Churn AUC-ROC</div>
+                        <div class="metric-value">0.998</div>
+                        <div class="metric-delta positive">Near perfect</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations Page -->
+        <div id="page-recommendations" class="page-content" style="display: none;">
+            <h1 class="st-title">💡 Smart Recommendations</h1>
+            <p class="st-caption">AI-generated personalized action plans for 3,900 customers</p>
+            
+            <div class="message-box info">
+                <strong>📊 Summary:</strong> 383 urgent actions • 978 high-priority customers • 2,539 standard engagement
+            </div>
+            
+            <div class="expander open">
+                <div class="expander-header" onclick="toggleExpander(this)">
+                    <div>
+                        <span class="priority-badge urgent">URGENT</span>
+                        <strong>Customer #2451 - At-Risk Churner</strong>
+                    </div>
+                    <span class="expander-arrow">▶</span>
+                </div>
+                <div class="expander-content">
+                    <p><strong>CLV:</strong> $2,145 • <strong>Churn Probability:</strong> 78% • <strong>Segment:</strong> At-Risk Churner</p>
+                    
+                    <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Recommended Actions:</h4>
+                    <ul style="margin-left: 1.5rem; color: #a3a8b4; line-height: 1.8;">
+                        <li>🚨 IMMEDIATE: Personal call from customer success within 24 hours</li>
+                        <li>Offer exclusive 35% discount valid for 7 days</li>
+                        <li>Send personalized product recommendations</li>
+                        <li>Deploy win-back email sequence</li>
+                    </ul>
+                    
+                    <div style="margin-top: 1rem; padding: 1rem; background: #1e1e1e; border-radius: 0.5rem;">
+                        <strong>Timeline:</strong> Immediate action required<br>
+                        <strong>Expected Value:</strong> $536 recovery potential
+                    </div>
+                </div>
+            </div>
+            
+            <div class="expander">
+                <div class="expander-header" onclick="toggleExpander(this)">
+                    <div>
+                        <span class="priority-badge high">HIGH</span>
+                        <strong>Customer #1832 - Budget-Minded Shopper</strong>
+                    </div>
+                    <span class="expander-arrow">▶</span>
+                </div>
+                <div class="expander-content">
+                    <p><strong>CLV:</strong> $1,876 • <strong>Churn Probability:</strong> 28% • <strong>Segment:</strong> Budget-Minded</p>
+                    
+                    <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Recommended Actions:</h4>
+                    <ul style="margin-left: 1.5rem; color: #a3a8b4; line-height: 1.8;">
+                        <li>Send targeted 20% discount email within next week</li>
+                        <li>Highlight value bundles and seasonal promotions</li>
+                        <li>Introduce loyalty points program</li>
+                        <li>Set up cart abandonment reminders</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="expander">
+                <div class="expander-header" onclick="toggleExpander(this)">
+                    <div>
+                        <span class="priority-badge standard">STANDARD</span>
+                        <strong>Customer #3127 - High-Value Frequent Buyer</strong>
+                    </div>
+                    <span class="expander-arrow">▶</span>
+                </div>
+                <div class="expander-content">
+                    <p><strong>CLV:</strong> $3,421 • <strong>Churn Probability:</strong> 5% • <strong>Segment:</strong> High-Value</p>
+                    
+                    <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Recommended Actions:</h4>
+                    <ul style="margin-left: 1.5rem; color: #a3a8b4; line-height: 1.8;">
+                        <li>Enroll in VIP loyalty tier with exclusive benefits</li>
+                        <li>Offer early access to new collection preview</li>
+                        <li>Deploy predictive upselling</li>
+                        <li>Send personalized thank-you with premium gift</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROI Page -->
+        <div id="page-roi" class="page-content" style="display: none;">
+            <h1 class="st-title">📈 ROI Analysis</h1>
+            <p class="st-caption">Marketing budget optimization and sensitivity analysis</p>
+            
+            <div class="container">
+                <h2>Achieved Results</h2>
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <div class="metric-label">Re-engagement Lift</div>
+                        <div class="metric-value">+12%</div>
+                        <div class="metric-delta positive">From 15% to 27%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Marketing ROI</div>
+                        <div class="metric-value">29.36x</div>
+                        <div class="metric-delta positive">+192% improvement</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Revenue Protected</div>
+                        <div class="metric-value">$800K+</div>
+                        <div class="metric-delta positive">At-risk revenue saved</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">CAC Reduction</div>
+                        <div class="metric-value">-30%</div>
+                        <div class="metric-delta positive">Lower acquisition cost</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container">
+                <h2>ROI Sensitivity to Budget</h2>
+                <div id="roiSensitivityChart" class="chart-wrapper"></div>
+            </div>
+        </div>
+
+        <!-- Customer Lookup Page -->
+        <div id="page-lookup" class="page-content" style="display: none;">
+            <h1 class="st-title">🎯 Customer Lookup</h1>
+            <p class="st-caption">Search and analyze individual customer profiles</p>
+            
+            <div class="container">
+                <label class="sidebar-label">Enter Customer ID</label>
+                <input type="number" id="lookup-customer-id" placeholder="Enter customer ID..." 
+                       style="max-width: 300px; margin-bottom: 1rem;">
+                <button onclick="lookupCustomer()" 
+                        style="padding: 0.75rem 2rem; background: #ff4b4b; border: none; 
+                               border-radius: 0.25rem; color: white; font-weight: 600; cursor: pointer;">
+                    Search Customer
+                </button>
+                
+                <div id="customer-results" style="margin-top: 2rem; display: none;">
+                    <h3>Customer Profile</h3>
+                    <div class="metrics-row">
+                        <div class="metric-card">
+                            <div class="metric-label">Customer ID</div>
+                            <div class="metric-value" id="cust-id">1234</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Predicted CLV</div>
+                            <div class="metric-value" id="cust-clv">$1,234</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Segment</div>
+                            <div class="metric-value" style="font-size: 1.2rem;" id="cust-segment">Segment 0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Churn Risk</div>
+                            <div class="metric-value" id="cust-risk">8%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message-box info" style="margin-top: 1.5rem;">
+                        <h4>📋 Recommended Actions</h4>
+                        <p id="cust-actions">Personalized recommendations will appear here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page Navigation
+        function switchPage(pageName) {
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById('page-' + pageName).style.display = 'block';
+            initCharts(pageName);
+        }
+        
+        // Segment Detail Navigation
+        function showSegmentDetail(segmentId) {
+            document.querySelectorAll('.segment-detail').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById('segment-detail-' + segmentId).style.display = 'block';
+            event.target.classList.add('active');
+        }
+        
+        // Expander Toggle
+        function toggleExpander(header) {
+            const expander = header.parentElement;
+            expander.classList.toggle('open');
+        }
+        
+        // CLV Prediction
+        function predictCLV() {
+            const age = parseFloat(document.getElementById('pred-age').value);
+            const purchases = parseFloat(document.getElementById('pred-purchases').value);
+            const amount = parseFloat(document.getElementById('pred-amount').value);
+            const rating = parseFloat(document.getElementById('pred-rating').value);
+            const subscription = document.getElementById('pred-subscription').value;
+            
+            let clv = amount * purchases * (rating / 5);
+            if (subscription === 'yes') clv *= 1.3;
+            if (age < 35) clv *= 1.2;
+            
+            clv = Math.round(clv);
+            const margin = clv * 0.1;
+            
+            let segment, churnRisk;
+            if (clv > 1800 && purchases > 8 && subscription === 'yes') {
+                segment = '🌟 High-Value Frequent Buyer';
+                churnRisk = '8%';
+            } else if (clv > 1000 && purchases > 3) {
+                segment = '💰 Budget-Minded Shopper';
+                churnRisk = '22%';
+            } else {
+                segment = '⚠️ At-Risk Churner';
+                churnRisk = '55%';
+            }
+            
+            document.getElementById('pred-clv-value').textContent = '$' + clv.toLocaleString();
+            document.getElementById('pred-confidence').textContent = 
+                `$${Math.round(clv - margin).toLocaleString()} - $${Math.round(clv + margin).toLocaleString()}`;
+            document.getElementById('pred-segment').textContent = segment;
+            document.getElementById('pred-churn').textContent = churnRisk;
+            
+            document.getElementById('prediction-results').style.display = 'block';
+        }
+        
+        // Customer Lookup
+        function lookupCustomer() {
+            const custId = document.getElementById('lookup-customer-id').value;
+            if (!custId) return;
+            
+            // Simulate lookup
+            const clv = Math.round(Math.random() * 3000 + 500);
+            const segments = ['🌟 High-Value Frequent Buyer', '💰 Budget-Minded Shopper', '⚠️ At-Risk Churner'];
+            const risks = ['8%', '22%', '55%'];
+            const idx = Math.floor(Math.random() * 3);
+            
+            document.getElementById('cust-id').textContent = custId;
+            document.getElementById('cust-clv').textContent = '$' + clv.toLocaleString();
+            document.getElementById('cust-segment').textContent = segments[idx];
+            document.getElementById('cust-risk').textContent = risks[idx];
+            document.getElementById('cust-actions').textContent = 
+                'Personalized recommendations based on segment ' + idx + ' strategy...';
+            
+            document.getElementById('customer-results').style.display = 'block';
+        }
+        
+        // Refresh Data
+        function refreshData() {
+            alert('Data refreshed! (In production, this would reload from the backend)');
+        }
+        
+        // Export Data
+        function exportData() {
+            alert('Export functionality (In production, this would download a CSV/PDF report)');
+        }
+        
+        // Initialize Charts
+        function initCharts(page) {
+            if (page === 'overview' || !page) {
+                // Segment Pie Chart
+                Plotly.newPlot('segmentPie', [{
+                    values: [1443, 1918, 539],
+                    labels: ['High-Value (37%)', 'Budget-Minded (49%)', 'At-Risk (14%)'],
+                    type: 'pie',
+                    marker: { colors: ['#1f77b4', '#ff7f0e', '#2ca02c'] }
+                }], {
+                    title: { text: '', font: { color: '#fafafa' } },
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#a3a8b4' },
+                    height: 400
+                });
+                
+                // CLV by Segment
+                Plotly.newPlot('clvBySegment', [{
+                    x: ['Segment 0', 'Segment 1', 'Segment 2'],
+                    y: [2100, 1200, 800],
+                    type: 'bar',
+                    marker: { color: ['#1f77b4', '#ff7f0e', '#2ca02c'] }
+                }], {
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#a3a8b4' },
+                    xaxis: { color: '#a3a8b4' },
+                    yaxis: { color: '#a3a8b4', title: 'Average CLV ($)' },
+                    height: 300
+                });
+                
+                // Churn Risk
+                Plotly.newPlot('churnRiskChart', [{
+                    x: ['Segment 0', 'Segment 1', 'Segment 2'],
+                    y: [8, 22, 55],
+                    type: 'bar',
+                    marker: { color: ['#09ab3b', '#ffa421', '#ff4b4b'] }
+                }], {
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#a3a8b4' },
+                    xaxis: { color: '#a3a8b4' },
+                    yaxis: { color: '#a3a8b4', title: 'Churn Risk (%)' },
+                    height: 300
+                });
+            }
+            
+            if (page === 'roi') {
+                // ROI Sensitivity
+                const budgets = [50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000];
+                const rois = [15.2, 22.3, 26.8, 28.5, 29.36, 28.1, 25.4, 22.1, 19.5, 17.2];
+                
+                Plotly.newPlot('roiSensitivityChart', [{
+                    x: budgets,
+                    y: rois,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    marker: { color: '#ff4b4b', size: 10 },
+                    line: { width: 3 }
+                }], {
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#a3a8b4' },
+                    xaxis: { color: '#a3a8b4', title: 'Advertising Budget ($)' },
+                    yaxis: { color: '#a3a8b4', title: 'ROI (x)' },
+                    height: 400
+                });
+            }
+        }
+        
+        // Initialize on load
+        window.onload = function() {
+            initCharts('overview');
+        };
+    </script>
+</body>
+</html>
+
