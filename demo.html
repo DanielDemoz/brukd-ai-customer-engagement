@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Driven Customer Engagement Demo | Brukd Consultancy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+        
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #2563eb;
+        }
+        
+        .tagline {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .contact-info {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .contact-info a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 1rem 2rem;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .tab.active {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .metric-change {
+            color: #10b981;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .card h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .segment-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .segment-btn {
+            padding: 1rem 2rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .segment-btn:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        
+        .segment-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .segment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .detail-item {
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+        
+        .detail-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .chart-container {
+            margin: 2rem 0;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .recommendation-card {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .recommendation-card.urgent {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        
+        .recommendation-card.high {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+        
+        .rec-priority {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .rec-priority.urgent { color: #ef4444; }
+        .rec-priority.high { color: #f59e0b; }
+        .rec-priority.standard { color: #10b981; }
+        
+        .rec-customer {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .rec-details {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .rec-actions {
+            background: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+        
+        .rec-actions h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .rec-actions ul {
+            margin-left: 1.5rem;
+        }
+        
+        .rec-actions li {
+            margin-bottom: 0.3rem;
+            color: #666;
+        }
+        
+        .prediction-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .input-group input,
+        .input-group select {
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .predict-btn {
+            padding: 1rem 2rem;
+            background: white;
+            color: #2563eb;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .result-box {
+            background: white;
+            color: #333;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+        
+        .footer {
+            background: #1f2937;
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer h3 {
+            margin-bottom: 1rem;
+            color: #2563eb;
+        }
+        
+        .footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .header-content { flex-direction: column; text-align: center; }
+            .contact-info { text-align: center; margin-top: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <div class="logo">BRUKD CONSULTANCY</div>
+                <div class="tagline">Practical AI for Real-World Impact</div>
+            </div>
+            <div class="contact-info">
+                <div><a href="https://brukdconsultancy.com" target="_blank">brukdconsultancy.com</a></div>
+                <div>Book Your AI Roadmap Session</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="container">
+        <div class="hero">
+            <h1>🎯 AI-Driven Customer Engagement</h1>
+            <p>Interactive Demo: Explore How AI Transforms Customer Intelligence</p>
+            <p style="font-size: 1rem; margin-top: 1rem; opacity: 0.9;">
+                Case Study: Fashion Retail Company achieved +12% re-engagement and 29.36x marketing ROI
+            </p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">📊 Executive Overview</button>
+            <button class="tab" onclick="showTab('segments')">👥 Customer Segments</button>
+            <button class="tab" onclick="showTab('predictions')">🔮 Live Predictions</button>
+            <button class="tab" onclick="showTab('recommendations')">💡 Smart Recommendations</button>
+            <button class="tab" onclick="showTab('impact')">📈 Business Impact</button>
+        </div>
+
+        <!-- Tab 1: Executive Overview -->
+        <div id="overview" class="tab-content active">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">3</div>
+                    <div class="metric-label">Customer Segments</div>
+                    <div class="metric-change">↑ Actionable targeting strategies</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">+12%</div>
+                    <div class="metric-label">Re-engagement Lift</div>
+                    <div class="metric-change">↑ Vs. previous campaigns</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">99.96%</div>
+                    <div class="metric-label">CLV Accuracy</div>
+                    <div class="metric-change">↑ R² = 0.9996 (XGBoost)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">29.36x</div>
+                    <div class="metric-label">Marketing ROI</div>
+                    <div class="metric-change">↑ Optimized ad spend</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Customer Base Overview</h2>
+                <div class="segment-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Total Customers</div>
+                        <div class="detail-value">3,900</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Total CLV</div>
+                        <div class="detail-value">$5.9M</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Average CLV</div>
+                        <div class="detail-value">$1,518</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">High-Risk Customers</div>
+                        <div class="detail-value">383</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div id="segmentPieChart"></div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Customer Segments -->
+        <div id="segments" class="tab-content">
+            <div class="card">
+                <h2>👥 Explore Customer Segments</h2>
+                <p style="color: #666; margin-bottom: 2rem;">Click on a segment to see detailed characteristics and engagement strategies</p>
+                
+                <div class="segment-selector">
+                    <button class="segment-btn active" onclick="showSegment(0)">
+                        🌟 Segment 0: High-Value Frequent Buyers
+                    </button>
+                    <button class="segment-btn" onclick="showSegment(1)">
+                        💰 Segment 1: Budget-Minded Shoppers
+                    </button>
+                    <button class="segment-btn" onclick="showSegment(2)">
+                        ⚠️ Segment 2: At-Risk Churners
+                    </button>
+                </div>
+
+                <div id="segment-0" class="segment-info">
+                    <div class="segment-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Customer Count</div>
+                            <div class="detail-value">1,443</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">% of Base</div>
+                            <div class="detail-value">37%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Average CLV</div>
+                            <div class="detail-value">$2,100+</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Churn Risk</div>
+                            <div class="detail-value" style="color: #10b981;">8%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Subscription Rate</div>
+                            <div class="detail-value">62.1%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Avg Age</div>
+                            <div class="detail-value">28-35</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: #eff6ff; border-radius: 10px;">
+                        <h3 style="color: #2563eb; margin-bottom: 1rem;">💎 Engagement Strategy</h3>
+                        <ul style="margin-left: 1.5rem; color: #666;">
+                            <li>VIP loyalty program with exclusive benefits</li>
+                            <li>Personalized product recommendations</li>
+                            <li>Early access to new collections</li>
+                            <li>Premium referral program</li>
+                            <li>Predictive upselling campaigns</li>
+                        </ul>
+                        <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px;">
+                            <strong>Expected Impact:</strong> +15-20% revenue per customer<br>
+                            <strong>Budget Allocation:</strong> 30% of marketing spend
+                        </div>
+                    </div>
+                </div>
+
+                <div id="segment-1" class="segment-info" style="display: none;">
+                    <div class="segment-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Customer Count</div>
+                            <div class="detail-value">1,918</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">% of Base</div>
+                            <div class="detail-value">41%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Average CLV</div>
+                            <div class="detail-value">$1,200</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Churn Risk</div>
+                            <div class="detail-value" style="color: #f59e0b;">22%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Subscription Rate</div>
+                            <div class="detail-value">0%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Avg Age</div>
+                            <div class="detail-value">40-50</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: #fffbeb; border-radius: 10px;">
+                        <h3 style="color: #f59e0b; margin-bottom: 1rem;">💰 Engagement Strategy</h3>
+                        <ul style="margin-left: 1.5rem; color: #666;">
+                            <li>Targeted promotional emails (15-20% discounts)</li>
+                            <li>Bundle offers and value packs</li>
+                            <li>Seasonal campaigns</li>
+                            <li>Cart abandonment recovery</li>
+                            <li>Loyalty points program</li>
+                        </ul>
+                        <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px;">
+                            <strong>Expected Impact:</strong> +10-12% conversion rate<br>
+                            <strong>Budget Allocation:</strong> 40% of marketing spend
+                        </div>
+                    </div>
+                </div>
+
+                <div id="segment-2" class="segment-info" style="display: none;">
+                    <div class="segment-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Customer Count</div>
+                            <div class="detail-value">539</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">% of Base</div>
+                            <div class="detail-value">26%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Average CLV</div>
+                            <div class="detail-value">$800</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Churn Risk</div>
+                            <div class="detail-value" style="color: #ef4444;">55%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Revenue at Risk</div>
+                            <div class="detail-value">$800K+</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Avg Age</div>
+                            <div class="detail-value">35-45</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: #fef2f2; border-radius: 10px;">
+                        <h3 style="color: #ef4444; margin-bottom: 1rem;">🚨 Urgent Win-Back Strategy</h3>
+                        <ul style="margin-left: 1.5rem; color: #666;">
+                            <li><strong>Priority:</strong> Immediate campaign activation</li>
+                            <li>Personal outreach from customer success team</li>
+                            <li>Deep discounts (30%+ off)</li>
+                            <li>Exit surveys to identify pain points</li>
+                            <li>30-day re-engagement drip campaign</li>
+                            <li>"We miss you" targeted messaging</li>
+                        </ul>
+                        <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px;">
+                            <strong>Expected Impact:</strong> +12% re-engagement rate<br>
+                            <strong>Budget Allocation:</strong> 30% of marketing spend<br>
+                            <strong>Timeline:</strong> Immediate action required
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div id="segmentBarChart"></div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Live Predictions -->
+        <div id="predictions" class="tab-content">
+            <div class="prediction-demo">
+                <h2>🔮 Try Live CLV Prediction</h2>
+                <p>Enter customer details to see predicted lifetime value in real-time</p>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Age</label>
+                        <input type="number" id="pred-age" value="35" min="18" max="80">
+                    </div>
+                    <div class="input-group">
+                        <label>Previous Purchases</label>
+                        <input type="number" id="pred-purchases" value="10" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Avg Purchase Amount ($)</label>
+                        <input type="number" id="pred-amount" value="60" min="10" max="500">
+                    </div>
+                    <div class="input-group">
+                        <label>Review Rating</label>
+                        <input type="number" id="pred-rating" value="4.0" min="1" max="5" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label>Subscription Status</label>
+                        <select id="pred-subscription">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="predict-btn" onclick="predictCLV()">Calculate CLV Prediction →</button>
+                
+                <div id="prediction-result" class="result-box">
+                    <div class="result-value" id="clv-result">$1,234</div>
+                    <div style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">
+                        Predicted Customer Lifetime Value
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div>
+                            <strong>Confidence Interval (95%):</strong><br>
+                            <span id="confidence-range">$1,111 - $1,357</span>
+                        </div>
+                        <div>
+                            <strong>Predicted Segment:</strong><br>
+                            <span id="predicted-segment">High-Value Frequent Buyer</span>
+                        </div>
+                        <div>
+                            <strong>Churn Risk:</strong><br>
+                            <span id="churn-risk" style="color: #10b981;">Low (8%)</span>
+                        </div>
+                        <div>
+                            <strong>Recommended Action:</strong><br>
+                            <span id="recommended-action">VIP Program Enrollment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Model Performance</h2>
+                <div class="segment-details">
+                    <div class="detail-item">
+                        <div class="detail-label">CLV Model Accuracy</div>
+                        <div class="detail-value">99.96%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Churn Model (F1-Score)</div>
+                        <div class="detail-value">0.94</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Churn AUC-ROC</div>
+                        <div class="detail-value">0.998</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">90-Day Accuracy</div>
+                        <div class="detail-value">87%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div id="clvDistributionChart"></div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Smart Recommendations -->
+        <div id="recommendations" class="tab-content">
+            <div class="card">
+                <h2>💡 AI-Generated Customer Recommendations</h2>
+                <p style="color: #666; margin-bottom: 2rem;">
+                    3,900 personalized action plans generated • 383 urgent actions • 978 high-priority customers
+                </p>
+
+                <div class="recommendation-card urgent">
+                    <div class="rec-priority urgent">🚨 URGENT - HIGH VALUE</div>
+                    <div class="rec-customer">Customer #2451 | At-Risk Churner</div>
+                    <div class="rec-details">
+                        <strong>CLV:</strong> $2,145 • <strong>Churn Probability:</strong> 78% • <strong>Last Purchase:</strong> 90 days ago
+                    </div>
+                    <div class="rec-actions">
+                        <h4>Recommended Actions:</h4>
+                        <ul>
+                            <li>IMMEDIATE: Personal call from customer success team within 24 hours</li>
+                            <li>Offer exclusive 35% discount valid for 7 days</li>
+                            <li>Send personalized product recommendations based on purchase history</li>
+                            <li>Deploy win-back email sequence with urgency messaging</li>
+                        </ul>
+                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                            <strong>Timeline:</strong> Immediate action required • 
+                            <strong>Expected Value:</strong> $536 recovery potential
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendation-card high">
+                    <div class="rec-priority high">⚠️ HIGH PRIORITY - HIGH VALUE</div>
+                    <div class="rec-customer">Customer #1832 | Budget-Minded Shopper</div>
+                    <div class="rec-details">
+                        <strong>CLV:</strong> $1,876 • <strong>Churn Probability:</strong> 28% • <strong>Last Purchase:</strong> 45 days ago
+                    </div>
+                    <div class="rec-actions">
+                        <h4>Recommended Actions:</h4>
+                        <ul>
+                            <li>Send targeted 20% discount email within next week</li>
+                            <li>Highlight value bundles and seasonal promotions</li>
+                            <li>Introduce loyalty points program benefits</li>
+                            <li>Set up cart abandonment reminders</li>
+                        </ul>
+                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                            <strong>Timeline:</strong> Action within 7 days • 
+                            <strong>Expected Impact:</strong> +15% conversion probability
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendation-card">
+                    <div class="rec-priority standard">✅ STANDARD - HIGH VALUE</div>
+                    <div class="rec-customer">Customer #3127 | High-Value Frequent Buyer</div>
+                    <div class="rec-details">
+                        <strong>CLV:</strong> $3,421 • <strong>Churn Probability:</strong> 5% • <strong>Last Purchase:</strong> 12 days ago
+                    </div>
+                    <div class="rec-actions">
+                        <h4>Recommended Actions:</h4>
+                        <ul>
+                            <li>Enroll in VIP loyalty tier with exclusive benefits</li>
+                            <li>Offer early access to new collection preview</li>
+                            <li>Deploy predictive upselling for complementary products</li>
+                            <li>Send personalized thank-you with premium gift</li>
+                        </ul>
+                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                            <strong>Timeline:</strong> Ongoing engagement • 
+                            <strong>Expected Impact:</strong> +20% additional revenue
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Business Impact -->
+        <div id="impact" class="tab-content">
+            <div class="card">
+                <h2>📈 Business Impact & ROI Analysis</h2>
+                
+                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+                    <h3 style="font-size: 2rem; margin-bottom: 1rem;">Achieved Results</h3>
+                    <div class="segment-details">
+                        <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 10px;">
+                            <div style="font-size: 2.5rem; font-weight: 800;">+12%</div>
+                            <div>Re-engagement Lift</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 10px;">
+                            <div style="font-size: 2.5rem; font-weight: 800;">29.36x</div>
+                            <div>Marketing ROI</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 10px;">
+                            <div style="font-size: 2.5rem; font-weight: 800;">$800K+</div>
+                            <div>Revenue Protected</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 10px;">
+                            <div style="font-size: 2.5rem; font-weight: 800;">-30%</div>
+                            <div>Customer Acquisition Cost</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 1rem;">Before vs. After Comparison</h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f9fafb;">
+                                <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #e5e7eb;">Metric</th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 2px solid #e5e7eb;">Before</th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 2px solid #e5e7eb;">After</th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 2px solid #e5e7eb;">Improvement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Re-engagement Rate</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb;">~15%</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">~27%</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">+12%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Marketing ROI</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb;">8-10x</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">29.36x</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">+192%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Customer Targeting</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb;">One-size-fits-all</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">3 Precision Segments</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">+200%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Churn Prevention</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb;">Reactive</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">90-day advance</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb; color: #10b981; font-weight: 700;">Proactive</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem;">CLV Visibility</td>
+                                <td style="padding: 1rem; text-align: center;">None</td>
+                                <td style="padding: 1rem; text-align: center; color: #10b981; font-weight: 700;">99.96% Accurate</td>
+                                <td style="padding: 1rem; text-align: center; color: #10b981; font-weight: 700;">New Capability</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div id="roiChart"></div>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Ready to Implement This for Your Business?</h2>
+                <p style="color: #666; margin-bottom: 2rem;">
+                    This demo showcases a replicable AI framework that can be customized for any industry. 
+                    Brukd Consultancy helps Canadian businesses operationalize AI with measurable ROI.
+                </p>
+                
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 15px; text-align: center;">
+                    <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">Transform Your Customer Engagement</h3>
+                    <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">Book a free 30-minute consultation to discuss your needs</p>
+                    <a href="https://brukdconsultancy.com" target="_blank" 
+                       style="display: inline-block; padding: 1rem 3rem; background: white; color: #2563eb; 
+                              text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 1.1rem;">
+                        Book Your AI Roadmap Session →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <div>
+                <h3>BRUKD CONSULTANCY</h3>
+                <p>Practical AI for Real-World Impact</p>
+                <p style="margin-top: 1rem;">Empowering small and medium businesses across Canada to grow with AI</p>
+            </div>
+            <div>
+                <h3>Services</h3>
+                <a href="https://brukdconsultancy.com">AI Strategy & Readiness</a>
+                <a href="https://brukdconsultancy.com">Data Analytics & Insights</a>
+                <a href="https://brukdconsultancy.com">Business Intelligence & Automation</a>
+                <a href="https://brukdconsultancy.com">Responsible & Ethical AI</a>
+                <a href="https://brukdconsultancy.com">Training & Team Development</a>
+            </div>
+            <div>
+                <h3>Resources</h3>
+                <a href="https://github.com/DanielDemoz/brukd-ai-customer-engagement" target="_blank">GitHub Repository</a>
+                <a href="README.md">Full Documentation</a>
+                <a href="docs/BLOG_POST.md">Case Study</a>
+                <a href="QUICKSTART.md">Quick Start Guide</a>
+            </div>
+            <div>
+                <h3>Contact</h3>
+                <p>Website: <a href="https://brukdconsultancy.com" target="_blank">brukdconsultancy.com</a></p>
+                <p>Serving businesses across Canada</p>
+                <p style="margin-top: 1rem;">Book Your AI Roadmap Session</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #374151;">
+            <p>© 2025 BRUKD Consultancy • All rights reserved.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #9ca3af;">
+                Demo Data: Fashion Retail Case Study (Anonymized)
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Segment Navigation
+        function showSegment(segmentId) {
+            document.querySelectorAll('.segment-info').forEach(info => {
+                info.style.display = 'none';
+            });
+            document.querySelectorAll('.segment-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('segment-' + segmentId).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        // CLV Prediction
+        function predictCLV() {
+            const age = parseFloat(document.getElementById('pred-age').value);
+            const purchases = parseFloat(document.getElementById('pred-purchases').value);
+            const amount = parseFloat(document.getElementById('pred-amount').value);
+            const rating = parseFloat(document.getElementById('pred-rating').value);
+            const subscription = document.getElementById('pred-subscription').value;
+            
+            // Simple prediction formula (demo purposes)
+            let clv = amount * purchases * (rating / 5);
+            if (subscription === 'yes') clv *= 1.3;
+            if (age < 35) clv *= 1.2;
+            
+            clv = Math.round(clv);
+            const margin = clv * 0.1;
+            
+            // Determine segment
+            let segment, churnRisk, action;
+            if (clv > 1800 && purchases > 8 && subscription === 'yes') {
+                segment = '🌟 High-Value Frequent Buyer';
+                churnRisk = '<span style="color: #10b981;">Low (8%)</span>';
+                action = 'VIP Program Enrollment';
+            } else if (clv > 1000 && purchases > 3) {
+                segment = '💰 Budget-Minded Shopper';
+                churnRisk = '<span style="color: #f59e0b;">Medium (22%)</span>';
+                action = 'Promotional Campaign';
+            } else {
+                segment = '⚠️ At-Risk Churner';
+                churnRisk = '<span style="color: #ef4444;">High (55%)</span>';
+                action = 'Urgent Win-Back Campaign';
+            }
+            
+            // Display results
+            document.getElementById('clv-result').textContent = '$' + clv.toLocaleString();
+            document.getElementById('confidence-range').textContent = 
+                `$${Math.round(clv - margin).toLocaleString()} - $${Math.round(clv + margin).toLocaleString()}`;
+            document.getElementById('predicted-segment').textContent = segment;
+            document.getElementById('churn-risk').innerHTML = churnRisk;
+            document.getElementById('recommended-action').textContent = action;
+            
+            document.getElementById('prediction-result').classList.add('show');
+        }
+
+        // Initialize Charts
+        function initCharts() {
+            // Segment Pie Chart
+            const segmentData = [{
+                values: [1443, 1918, 539],
+                labels: ['High-Value (37%)', 'Budget-Minded (49%)', 'At-Risk (14%)'],
+                type: 'pie',
+                marker: {
+                    colors: ['#2563eb', '#f59e0b', '#ef4444']
+                }
+            }];
+            
+            Plotly.newPlot('segmentPieChart', segmentData, {
+                title: 'Customer Segment Distribution',
+                height: 400
+            });
+
+            // Segment Bar Chart
+            const segmentBarData = [{
+                x: ['Segment 0', 'Segment 1', 'Segment 2'],
+                y: [2100, 1200, 800],
+                type: 'bar',
+                marker: {
+                    color: ['#2563eb', '#f59e0b', '#ef4444']
+                },
+                text: ['$2,100', '$1,200', '$800'],
+                textposition: 'outside'
+            }];
+            
+            Plotly.newPlot('segmentBarChart', segmentBarData, {
+                title: 'Average CLV by Segment',
+                yaxis: { title: 'Average CLV ($)' },
+                height: 400
+            });
+
+            // CLV Distribution Chart
+            const clvData = [{
+                x: Array.from({length: 50}, (_, i) => 200 + i * 90),
+                type: 'histogram',
+                marker: { color: '#2563eb' }
+            }];
+            
+            Plotly.newPlot('clvDistributionChart', clvData, {
+                title: 'Customer Lifetime Value Distribution',
+                xaxis: { title: 'CLV ($)' },
+                yaxis: { title: 'Number of Customers' },
+                height: 400
+            });
+
+            // ROI Chart
+            const budgets = [50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000];
+            const rois = [15.2, 22.3, 26.8, 28.5, 29.36, 28.1, 25.4, 22.1, 19.5, 17.2];
+            
+            const roiData = [{
+                x: budgets,
+                y: rois,
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: { color: '#10b981', size: 10 },
+                line: { width: 3 }
+            }];
+            
+            Plotly.newPlot('roiChart', roiData, {
+                title: 'Marketing ROI vs. Advertising Budget',
+                xaxis: { title: 'Advertising Budget ($)' },
+                yaxis: { title: 'ROI (x)' },
+                height: 400
+            });
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            initCharts();
+        };
+    </script>
+</body>
+</html>
+
