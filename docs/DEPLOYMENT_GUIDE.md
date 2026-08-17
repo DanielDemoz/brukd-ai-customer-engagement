@@ -1,6 +1,6 @@
 # 🚀 Deployment Guide
 
-Complete guide for deploying the Brukd AI-Driven Customer Engagement solution to production.
+Complete guide for deploying the Daniel S. Demoz AI-Driven Customer Engagement solution to production.
 
 ---
 
@@ -611,7 +611,7 @@ docker run --memory=4g brukd-customer-engagement
 - **Documentation:** [README.md](../README.md)
 - **Blog Post:** [BLOG_POST.md](BLOG_POST.md)
 - **Issues:** [GitHub Issues](https://github.com/brukd/ai-customer-engagement/issues)
-- **Email:** support@brukd.com
+- **Email:** asbdansi9@gmail.com
 
 ---
 
@@ -631,5 +631,5 @@ docker run --memory=4g brukd-customer-engagement
 
 ---
 
-*© 2025 Brukd. For production deployment support, contact our team at deploy@brukd.com*
+*© 2025 Daniel S. Demoz. For production deployment support, contact asbdansi9@gmail.com*
 

@@ -1,6 +1,6 @@
 # ⚡ Quick Start Guide
 
-Get up and running with Brukd AI-Driven Customer Engagement in 5 minutes!
+Get up and running with Daniel S. Demoz AI-Driven Customer Engagement in 5 minutes!
 
 ---
 
@@ -95,7 +95,7 @@ This will:
 **Expected output:**
 ```
 ================================================================================
-                    BRUKD AI-DRIVEN CUSTOMER ENGAGEMENT
+                    DANIEL S. DEMOZ — AI-DRIVEN CUSTOMER ENGAGEMENT
                          Complete Analysis Pipeline
 ================================================================================
 
@@ -335,7 +335,7 @@ docker-compose down
 - **Documentation:** Read full [README.md](README.md)
 - **Deployment:** See [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 - **Issues:** [GitHub Issues](https://github.com/brukd/ai-customer-engagement/issues)
-- **Email:** support@brukd.com
+- **Email:** asbdansi9@gmail.com
 
 ---
 
@@ -360,9 +360,9 @@ You now have a fully functional AI-driven customer engagement system!
 
 **Next:** Try it with your own data or deploy to production.
 
-**Questions?** Read the full [README.md](README.md) or contact us at support@brukd.com
+**Questions?** Read the full [README.md](README.md) or contact us at asbdansi9@gmail.com
 
 ---
 
-*© 2025 Brukd. Made with ❤️ for data-driven businesses.*
+*© 2025 Daniel S. Demoz. Made with ❤️ for data-driven businesses.*
 

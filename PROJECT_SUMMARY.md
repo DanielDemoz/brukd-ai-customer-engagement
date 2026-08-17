@@ -1,4 +1,4 @@
-# 🎯 Brukd AI-Driven Customer Segmentation & Predictive Engagement
+# 🎯 Daniel S. Demoz — AI-Driven Customer Segmentation & Predictive Engagement
 ## Project Summary & Overview
 
 **Created:** October 25, 2025  
@@ -9,7 +9,7 @@
 
 ## 🏆 Project Achievements
 
-This repository contains a **complete, replicable AI-driven customer intelligence framework** that demonstrates how Brukd helps clients:
+This repository contains a **complete, replicable AI-driven customer intelligence framework** that demonstrates how Daniel S. Demoz helps clients:
 
 ✅ **Define customer segments** using K-Means clustering  
 ✅ **Predict customer behavior** with 99.96% CLV accuracy  
@@ -281,14 +281,14 @@ brukd-ai-customer-engagement/
 
 ### For Fashion Retail Client
 
-**Before Brukd:**
+**Before Daniel S. Demoz:**
 - One-size-fits-all marketing
 - ~15% re-engagement rate
 - 8-10x marketing ROI
 - Reactive churn response
 - No customer value visibility
 
-**After Brukd:**
+**After Daniel S. Demoz:**
 - 3 precision-targeted segments
 - ~27% re-engagement rate (+12%)
 - **29.36x marketing ROI** (+192%)
@@ -357,7 +357,7 @@ brukd-ai-customer-engagement/
 - **Multiple Models:** Clustering, regression, classification demonstrated
 - **Documentation:** Comprehensive guides for learning and teaching
 
-### For Brukd
+### For Daniel S. Demoz
 - **Capability Demonstration:** Shows full-stack data science competency
 - **Client-Ready:** Can be customized for any industry
 - **Scalable Framework:** Foundation for similar projects
@@ -399,8 +399,8 @@ brukd-ai-customer-engagement/
 - Deployment: [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
 **Contact:**
-- **Email:** contact@brukd.com
-- **Website:** www.brukd.com
+- **Email:** asbdansi9@gmail.com
+- **Website:** brukdconsultancy.com
 - **LinkedIn:** linkedin.com/company/brukd
 - **GitHub:** github.com/brukd
 
@@ -463,7 +463,7 @@ This project represents a **complete, production-ready AI-driven customer engage
 5. ✅ **Can be customized** for any industry or use case
 6. ✅ **Is deployment-ready** with Docker and cloud guides
 
-**This is Brukd's signature approach to customer intelligence:**
+**This is Daniel S. Demoz's signature approach to customer intelligence:**
 - Data-driven insights
 - AI-powered predictions
 - Actionable recommendations
@@ -473,11 +473,11 @@ This project represents a **complete, production-ready AI-driven customer engage
 
 **Ready to transform your customer engagement?**
 
-Contact Brukd: contact@brukd.com
+Contact Daniel S. Demoz: asbdansi9@gmail.com
 
 ---
 
-*© 2025 Brukd Consulting. Built with ❤️ for data-driven businesses.*
+*© 2025 Daniel S. Demoz Consulting. Built with ❤️ for data-driven businesses.*
 
 **Version 1.0 | October 2025 | All Systems Ready** ✅
 

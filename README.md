@@ -1,4 +1,4 @@
-# Brukd AI Customer Segmentation & Predictive Engagement
+# Daniel S. Demoz — AI Customer Segmentation & Predictive Engagement
 
 End-to-end customer intelligence framework combining segmentation, CLV prediction, churn modeling, and segment-specific engagement recommendations.
 
@@ -37,4 +37,13 @@ Open http://localhost:8501
 
 Run the Streamlit dashboard locally or review segment visualizations in `visualizations/`. See `docs/METHODOLOGY.md` for full pipeline documentation.
 
-Built by Brukd Consultancy as a replicable client engagement showcase.
+Built by Daniel S. Demoz as a replicable client engagement showcase.
+
+## Contact
+
+Daniel S. Demoz  
+📧 Email: asbdansi9@gmail.com  
+📱 Phone: (437) 249-3308  
+🔗 LinkedIn: linkedin.com/in/daniel-s-demoz  
+💼 GitHub: github.com/DanielDemoz  
+🌐 Website: brukdconsultancy.com
