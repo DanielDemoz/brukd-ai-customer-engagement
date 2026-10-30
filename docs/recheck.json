@@ -1,0 +1,13 @@
+{
+ "rows": 3900,
+ "churn": {
+  "label_rate": 0.0979,
+  "majority_accuracy": 0.9021,
+  "accuracy_with_rule_inputs": 0.9836,
+  "accuracy_without_rule_inputs": 0.9021
+ },
+ "clv_r2": {
+  "with_formula_inputs": 0.9996,
+  "without_formula_inputs": -0.0598
+ }
+}

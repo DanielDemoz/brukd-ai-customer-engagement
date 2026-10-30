@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Engagement Pipeline | A re-check | Daniel S. Demoz</title>
+  <meta name="description" content="A customer segmentation, churn and CLV pipeline, re-checked. Both models had learned rules they were given. What the data supports instead.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://www.danieldemoz.com/kit/rai.css">
+</head>
+<body>
+  <div class="rai-top"><div class="wrap">
+    <span>Daniel S. Demoz · Responsible AI in practice</span>
+    <span><a href="https://www.danieldemoz.com/projects">All projects</a> &nbsp;·&nbsp; <a href="https://github.com/DanielDemoz/brukd-ai-customer-engagement">Code</a></span>
+  </div></div>
+
+  <header class="rai-hero"><div class="wrap">
+    <p class="eyebrow">Customer segmentation and engagement</p>
+    <h1>A churn model at 98% that knew nothing about churn</h1>
+    <p class="lead">A segmentation, churn and CLV pipeline built on a public shopping dataset, re-checked in October 2026. Both models were scoring their own labels. Here is what the data actually supports.</p>
+    <div class="chips">
+      <span class="chip status">Re-checked · leakage found</span>
+      <span class="chip">3,900 records</span>
+      <span class="chip">Rules over models here</span>
+      <span class="chip">No dates in the data</span>
+    </div>
+  </div></header>
+
+  <nav class="steps" aria-label="Sections"><div class="wrap">
+    <a href="#pipeline"><b>1</b>Pipeline</a>
+    <a href="#recheck"><b>2</b>The re-check</a>
+    <a href="#instead"><b>3</b>What to do instead</a>
+    <a href="#framework"><b>4</b>Reliable AI checklist</a>
+  </div></nav>
+
+  <main>
+    <section id="pipeline"><div class="wrap">
+      <h2>What the pipeline does</h2>
+      <p class="sub">Four Python scripts in <code>scripts/</code>, run in order by <code>run_pipeline.py</code>.</p>
+      <div class="grid g2" style="margin-top:18px"><div class="card"><p class="label">Step 1</p><h3>Data preparation</h3><p>Cleans 3,900 shopping records, builds a CLV value and a churn-risk label, and one-hot encodes the categories.</p></div><div class="card"><p class="label">Step 2</p><h3>Segmentation</h3><p>K-means groups customers by age, spend, rating and purchase history.</p></div><div class="card"><p class="label">Step 3</p><h3>Churn model</h3><p>Random forest and XGBoost classifiers, with SMOTE, trained on the churn-risk label.</p></div><div class="card"><p class="label">Step 4</p><h3>Recommendations</h3><p>Rules map each segment and risk level to an engagement action, such as a loyalty offer.</p></div></div>
+    </div></section>
+    <section id="recheck" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+      <h2>What the re-check found</h2>
+      <p class="sub">The earlier README reported a 99.96% CLV model and 87%+ churn accuracy. Both labels were built from the model's own inputs.</p>
+      <div class="grid g2" style="margin-top:18px"><div class="card" style="overflow-x:auto"><h3>Churn risk</h3><table class="t"><tr><th>Model</th><th>Accuracy</th></tr><tr><td>Always guess "not at risk"</td><td>90.2%</td></tr><tr class="hl"><td>Random forest, all columns</td><td>98.4%</td></tr><tr><td>Random forest, without the 4 rule columns</td><td>90.2%</td></tr></table><p style="font-size:.88rem;color:var(--muted);margin-top:10px">The label is a rule: low previous purchases, low rating, no subscription and low spend. A customer with 3 of the 4 is labelled "at risk".</p></div><div class="card" style="overflow-x:auto"><h3>Customer lifetime value</h3><table class="t"><tr><th>Model</th><th>R²</th></tr><tr class="hl"><td>Gradient boosting, all columns</td><td>0.9996</td></tr><tr><td>Without purchase amount and previous purchases</td><td>-0.06</td></tr></table><p style="font-size:.88rem;color:var(--muted);margin-top:10px">CLV was defined as purchase amount x previous purchases, and both were inputs.</p></div></div>
+      <div class="note warn"><b>Honest finding:</b> both models re-learned rules they were given. Without the rule inputs, the churn model is no better than always guessing "not at risk", and the CLV model is no better than the average. There is also no date in the data, so a "90-day" churn window cannot be measured.</div>
+    </div></section>
+    <section id="instead"><div class="wrap">
+      <h2>What to do instead</h2>
+      <div class="grid g2" style="margin-top:18px"><div class="card"><h3>With this data</h3><ul style="margin:0;padding-left:18px"><li>Use the churn-risk rule directly. It is clear and explainable, and needs no model.</li><li>Calculate CLV with the formula, and say it is past revenue, not a forecast.</li><li>Treat segments as a starting point for discussion, not as a finding.</li></ul><p style="margin-top:12px"><a href="https://danieldemoz.github.io/customer-segmentation-clv/">Try the CLV calculator and ROI scenario</a></p></div><div class="card"><h3>With real customer data</h3><ul style="margin:0;padding-left:18px"><li>Define churn from what happened later, for example no purchase in the next 90 days.</li><li>Keep any field used to build the label out of the model inputs.</li><li>Hold out a later time period for testing, the way the model would be used.</li><li>Check results by customer group before using them for offers.</li></ul></div></div>
+    </div></section>
+    <section id="framework" style="background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+      <h2>Reliable AI checklist</h2>
+      <p class="sub">The six questions of the <a href="https://www.danieldemoz.com/#method">Reliable AI Adoption Framework</a>, answered for this project.</p>
+      <div class="fw" style="margin-top:18px">
+        <div class="card"><h3>Business problem</h3><p>Target retention spend at customers likely to leave. That needs a label based on real future behaviour.</p></div>
+        <div class="card"><h3>Data readiness</h3><p>3,900 records from a public shopping-behaviour dataset with no dates. It looks synthetic and cannot support a time-based churn label.</p></div>
+        <div class="card"><h3>Governance and risk</h3><p>Leaked labels give confident-looking scores that would misdirect offers. The re-check is part of the project, not a footnote.</p></div>
+        <div class="card"><h3>Technology and tools</h3><p>Rules are the honest tool for this data. Models come back once a real label exists.</p></div>
+        <div class="card"><h3>People and adoption</h3><p>Marketing staff can read and question a rule. They cannot question a 99.96% score.</p></div>
+        <div class="card"><h3>Outcomes and monitoring</h3><p>With real data, compare predicted risk with who actually stopped buying, every quarter.</p></div>
+      </div>
+    </div></section>
+
+  </main>
+
+  <footer class="rai-foot"><div class="wrap">
+    <span>Built by Daniel S. Demoz · <a href="https://www.danieldemoz.com">danieldemoz.com</a></span>
+    <span>Data: public shopping-behaviour dataset (3,900 records), appears synthetic</span>
+  </div></footer>
+
+</body>
+</html>

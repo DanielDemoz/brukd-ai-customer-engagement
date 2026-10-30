@@ -67,7 +67,7 @@ def generate_segment_strategies():
             'communication_channels': ['Email (personalized)', 'App push', 'SMS', 'Direct mail'],
             'offer_types': ['Exclusive access', 'Premium rewards', 'Personalization', 'VIP events'],
             'frequency': 'Weekly',
-            'estimated_impact': '+15-20% revenue per customer',
+            'estimated_impact': 'Not yet measured. Test with a holdout group before rollout.',
             'budget_allocation': '30%'
         },
         1: {  # Budget-Minded Occasional Shoppers
@@ -81,7 +81,7 @@ def generate_segment_strategies():
             'communication_channels': ['Email (promotional)', 'Social media', 'Display ads', 'SMS'],
             'offer_types': ['Discounts', 'Bundles', 'Seasonal sales', 'Loyalty points'],
             'frequency': 'Bi-weekly',
-            'estimated_impact': '+10-12% conversion rate',
+            'estimated_impact': 'Not yet measured. Test with a holdout group before rollout.',
             'budget_allocation': '40%'
         },
         2: {  # At-Risk Churners
@@ -96,7 +96,7 @@ def generate_segment_strategies():
             'communication_channels': ['Email (urgent)', 'SMS', 'Phone call', 'Retargeting ads'],
             'offer_types': ['Deep discounts (30%+)', 'Free shipping', 'Gift with purchase', 'Surveys'],
             'frequency': 'Immediate, then weekly',
-            'estimated_impact': '+12% re-engagement rate',
+            'estimated_impact': 'Not yet measured. Test with a holdout group before rollout.',
             'budget_allocation': '30%'
         }
     }
@@ -354,10 +354,7 @@ def generate_executive_summary(df, recommendations_df):
     print(f"  Standard Engagement: {total_customers - urgent_customers - high_priority_customers:,} customers")
     
     print(f"\n📈 EXPECTED IMPACT:")
-    print(f"  High-Value Segment: +15-20% revenue increase")
-    print(f"  Budget-Minded Segment: +10-12% conversion improvement")
-    print(f"  At-Risk Segment: +12% re-engagement rate")
-    print(f"  Overall Projected Re-engagement Lift: +12%")
+    print(f"  Not yet measured. Run each action on a random half of the segment and compare.")
     
     print(f"\n💰 MARKETING BUDGET ALLOCATION:")
     print(f"  High-Value Frequent Buyers: 30% of budget")

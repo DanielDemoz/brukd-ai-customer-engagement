@@ -1,49 +1,53 @@
-# Daniel S. Demoz — AI Customer Segmentation & Predictive Engagement
+# AI Customer Segmentation and Engagement: a re-check
 
-End-to-end customer intelligence framework combining segmentation, CLV prediction, churn modeling, and segment-specific engagement recommendations.
+A pipeline for customer segments, churn risk, CLV and engagement rules, built on a public shopping-behaviour dataset and re-checked in October 2026.
 
-## Problem
+**Case study page:** https://danieldemoz.github.io/brukd-ai-customer-engagement/
+**Related:** [customer-segmentation-clv](https://github.com/DanielDemoz/customer-segmentation-clv) has the interactive CLV calculator and ROI scenario.
 
-Fashion retail clients need actionable customer segments and predictive models to target retention spend—not just static RFM reports.
+## What the pipeline does
 
-## Approach
+1. `scripts/01_data_preparation.py` cleans the 3,900 records and builds a CLV value and a churn-risk label.
+2. `scripts/02_customer_segmentation.py` groups customers with K-means.
+3. `scripts/03_churn_prediction_90_days.py` trains random forest and XGBoost on the churn-risk label.
+4. `scripts/04_engagement_recommendations.py` maps segment and risk to an engagement action.
 
-Processed 3,900 anonymized customer records: K-Means segmentation (K=3), XGBoost CLV regression, 90-day churn classification, Random Forest segment assignment for new customers, and a rule-based engagement recommendation engine. Packaged analysis scripts, trained models, Streamlit dashboard, and optional FastAPI serving layer.
+## What the re-check found
 
-## Results
+`analysis/recheck.py` reproduces the labels and tests the models with 5-fold cross-validation.
 
-- 3 segments: high-value frequent buyers (~33%), budget-minded occasional (~41%), at-risk churners (~26%)
-- CLV model: R² = 0.9996; churn model: 87%+ accuracy (90-day window)
-- Segment classifier: 92%+ accuracy for new customers
-- Marketing ROI scenario: 29.36× on $250K ad budget; +12% predicted re-engagement lift
+| Check | Result |
+|---|---|
+| Churn: always guess "not at risk" | 90.2% |
+| Churn: random forest, all columns | 98.4% |
+| Churn: random forest, without the 4 rule columns | 90.2% |
+| CLV: gradient boosting R², all columns | 0.9996 |
+| CLV: R² without the 2 formula columns | -0.06 |
 
-## Tech stack
+- The churn label is a rule built from 4 input columns, so the model re-learns the rule.
+- CLV is purchase amount x previous purchases, and both were inputs.
+- The data has no dates, so a "90-day" churn window cannot be measured.
 
-Python, scikit-learn, XGBoost, pandas, Streamlit, FastAPI, Docker, Joblib
+The earlier README, summary and blog post reported these scores as model performance, along with ROI and re-engagement figures based on assumptions. A blog post written as a client case study, with a testimonial, was also removed, because the project uses a public dataset.
+
+## Responsible AI, following the Reliable AI Adoption Framework
+
+1. **Business problem:** target retention spend at customers likely to leave. That needs a label based on real future behaviour.
+2. **Data readiness:** 3,900 records from a public shopping-behaviour dataset, included in `data/`. No dates, and it looks synthetic.
+3. **Governance and risk:** leaked labels give confident scores that would misdirect offers, so the re-check is shown first.
+4. **Technology and tools:** rules are the honest tool for this data. Models come back once a real label exists.
+5. **People and adoption:** marketing staff can read and question a rule.
+6. **Outcomes and monitoring:** with real data, compare predicted risk with who actually stopped buying, every quarter.
 
 ## How to run
 
 ```bash
-git clone https://github.com/DanielDemoz/brukd-ai-customer-engagement.git
-cd brukd-ai-customer-engagement
 pip install -r requirements.txt
-python scripts/run_pipeline.py
-streamlit run dashboard_app.py
+python scripts/run_pipeline.py      # the original pipeline
+python analysis/recheck.py          # the re-check, writes docs/recheck.json
+pytest -q
 ```
 
-Open http://localhost:8501
+## Tech stack
 
-## Screenshot / demo
-
-Run the Streamlit dashboard locally or review segment visualizations in `visualizations/`. See `docs/METHODOLOGY.md` for full pipeline documentation.
-
-Built by Daniel S. Demoz as a replicable client engagement showcase.
-
-## Contact
-
-Daniel S. Demoz  
-📧 Email: asbdansi9@gmail.com  
-📱 Phone: (437) 249-3308  
-🔗 LinkedIn: linkedin.com/in/daniel-s-demoz  
-💼 GitHub: github.com/DanielDemoz  
-🌐 Website: brukdconsultancy.com
+Python, pandas, scikit-learn, XGBoost, imbalanced-learn, Streamlit (`dashboard_app.py`).

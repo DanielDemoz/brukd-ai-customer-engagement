@@ -424,36 +424,16 @@ def show_predictions(df):
     with tab3:
         st.subheader("📊 Model Performance Metrics")
         
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.markdown("""
-            **CLV Prediction Model**
-            - Model: XGBoost Regressor
-            - R² Score: **0.9996**
-            - Accuracy: **99.96%**
-            - MAE: $23.37
-            - RMSE: $33.37
-            """)
-        
-        with col2:
-            st.markdown("""
-            **Churn Prediction Model**
-            - Model: XGBoost Classifier
-            - Accuracy: **87.3%**
-            - F1-Score: **0.85**
-            - AUC-ROC: **0.93**
-            - Precision: 0.84
-            """)
-        
-        with col3:
-            st.markdown("""
-            **Segmentation Quality**
-            - Algorithm: K-Means (K=3)
-            - Silhouette Score: **0.42**
-            - Davies-Bouldin: **0.85**
-            - Clusters: Well-separated
-            """)
+        st.warning(
+            "These models were re-checked in October 2026. Both labels were built from the "
+            "model's own inputs, so the high scores measure leakage, not skill. "
+            "See analysis/recheck.py and docs/recheck.json."
+        )
+        import json
+        from pathlib import Path
+        recheck = Path(__file__).parent / "docs" / "recheck.json"
+        if recheck.exists():
+            st.json(json.loads(recheck.read_text()))
 
 def show_recommendations(recommendations):
     """Recommendations page"""
